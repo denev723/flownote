@@ -76,8 +76,6 @@ export default function GPTInputBox() {
     setInput("");
   };
 
-  console.log(todo);
-
   return (
     <div className="flex flex-col gap-2 w-full max-w-xl mx-auto mt-8">
       {!todo ? (
