@@ -3,6 +3,8 @@ import { useTodoStore } from "../../store/todoStore";
 import ParsedPreview from "./ParsedPreview";
 import { getChatGptResponse } from "../../api/apiClient";
 import { isValidTodo } from "../../utils/validation";
+import Textarea from "../../components/Textarea";
+import PrimaryButton from "../../components/PrimaryButton";
 
 export default function GPTInputBox() {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,20 +40,20 @@ export default function GPTInputBox() {
     <div className="flex flex-col gap-2 w-full max-w-xl mx-auto mt-8">
       {!todo ? (
         <>
-          <textarea
-            className="p-3 border rounded resize-none h-24 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          <Textarea
             placeholder="예: 내일 오전 10시에 회의 잡아줘"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            className="h-40"
           />
-          <button
-            type="submit"
+          <PrimaryButton
+            type="button"
             disabled={isLoading}
-            className={`bg-blue-500 text-white py-2 px-4 rounded cursor-pointer hover:bg-blue-600 transition disabled:bg-gray-400 disabled:opacity-80 disabled:cursor-not-allowed`}
             onClick={handleSubmit}
+            className={`${isLoading ? "opacity-80 cursor-not-allowed" : ""}`}
           >
             {isLoading ? "로딩 중..." : "GPT에게 요청하기"}
-          </button>
+          </PrimaryButton>
         </>
       ) : (
         <ParsedPreview />

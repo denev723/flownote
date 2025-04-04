@@ -1,10 +1,11 @@
+import "dotenv/config";
 import express from "express";
 import appRouter from "./api";
 import cors from "cors";
 
 const server = await (async () => {
   const app = express();
-  const PORT = import.meta.env.VITE_SERVER_PORT || 3000;
+  const PORT = process.env.SERVER_PORT || 3000;
 
   app.use(cors());
   app.use(express.json());

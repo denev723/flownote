@@ -2,10 +2,16 @@ import { Client } from "@notionhq/client";
 import { GroupType } from "../../types";
 
 const notion = new Client({
-  auth: "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",
+  auth: process.env.NOTION_API_KEY,
 });
 
-export const createTodoInNotion = async (todo: { title: string; description: string; startDate: string; endDate: string; group: GroupType }) => {
+export const createTodoInNotion = async (todo: {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  group: GroupType;
+}) => {
   return await notion.pages.create({
     parent: { database_id: "1caa25c6-4e85-815d-b5f2-c128ac02d9c0" },
     properties: {
