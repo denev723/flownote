@@ -2,8 +2,9 @@ import { FaRegCalendarAlt, FaRegCheckCircle, FaRegFileAlt } from "react-icons/fa
 import PrimaryButton from "../../components/PrimaryButton";
 import { FormEvent } from "react";
 import { useTodoStore } from "../../store/todoStore";
-import { createTodoInNotion } from "../../api/notionService";
 import { useNavigate } from "react-router-dom";
+import { createTodo } from "../../api/apiClient";
+import { GroupType } from "../../types";
 
 export default function ParsedPreview() {
   const navigate = useNavigate();
@@ -26,11 +27,11 @@ export default function ParsedPreview() {
       description: formData.get("desc") as string,
       startDate: formData.get("from") as string,
       endDate: formData.get("to") as string,
-      group: formData.get("group") as string,
+      group: formData.get("group") as GroupType,
     };
 
     try {
-      await createTodoInNotion(newTodo);
+      await createTodo(newTodo);
       alert("📌 노션에 할 일이 성공적으로 등록됐어요!");
       resetGptResult();
 

@@ -1,12 +1,13 @@
 import { Client } from "@notionhq/client";
+import { GroupType } from "../../types";
 
 const notion = new Client({
-  auth: import.meta.env.VITE_NOTION_API_KEY,
+  auth: "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",
 });
 
-export const createTodoInNotion = async (todo: { title: string; description: string; startDate: string; endDate: string; group: string }) => {
+export const createTodoInNotion = async (todo: { title: string; description: string; startDate: string; endDate: string; group: GroupType }) => {
   return await notion.pages.create({
-    parent: { database_id: import.meta.env.VITE_NOTION_DATABASE_ID },
+    parent: { database_id: "1caa25c6-4e85-815d-b5f2-c128ac02d9c0" },
     properties: {
       Name: {
         title: [
@@ -25,7 +26,7 @@ export const createTodoInNotion = async (todo: { title: string; description: str
       시작일: {
         date: {
           start: todo.startDate,
-          end: todo.startDate === todo.endDate ? todo.endDate : null,
+          end: todo.startDate === todo.endDate ? null : todo.endDate,
         },
       },
     },
@@ -48,4 +49,17 @@ export const createTodoInNotion = async (todo: { title: string; description: str
         ]
       : [],
   });
+};
+
+export const getDatabaseProperties = async (databaseId: string) => {
+  try {
+    const response = await notion.databases.retrieve({
+      database_id: databaseId,
+    });
+    console.log("[🧾 Notion 속성 정보]", response.properties);
+    return response.properties;
+  } catch (error) {
+    console.error("[❗DB 속성 가져오기 실패]", error);
+    throw error;
+  }
 };
