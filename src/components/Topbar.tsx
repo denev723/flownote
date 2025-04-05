@@ -1,22 +1,14 @@
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBell, FaLightbulb, FaQuestionCircle, FaStream, FaUser } from "react-icons/fa";
 
 interface Props {
-  title?: string;
-  isSidebarOpen?: boolean;
+  title: string;
 }
 
-export default function Topbar({ title = "FlowNote - To Do Bot", isSidebarOpen = true }: Props) {
+export default function Topbar({ title }: Props) {
   return (
     <div className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 w-full shadow-sm">
-      {/* 왼쪽: 사이드바 토글 버튼과 로고/타이틀 */}
       <div className="flex items-center gap-3">
-        <button
-          className="w-10 h-10 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-100 focus:outline-none transition-colors"
-          aria-label={isSidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
-        >
-          {isSidebarOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
-        </button>
-
+        <FaStream className="text-blue-500 text-xl cursor-pointer hover:text-blue-600" />
         <h1 className="text-xl font-semibold text-gray-800 hidden md:block">{title}</h1>
       </div>
 
@@ -26,7 +18,28 @@ export default function Topbar({ title = "FlowNote - To Do Bot", isSidebarOpen =
       </div>
 
       {/* 오른쪽: 추가 기능을 위한 공간 */}
-      <div className="flex items-center gap-2">{/* 여기에 필요한 버튼이나 알림 등을 추가할 수 있습니다 */}</div>
+      <div className="flex items-center gap-4">
+        <FaLightbulb
+          className="text-amber-500 text-xl cursor-pointer hover:text-amber-600"
+          title="팁"
+        />
+        <FaQuestionCircle
+          className="text-blue-500 text-xl cursor-pointer hover:text-blue-600"
+          title="도움말"
+        />
+        <div className="relative">
+          <FaBell
+            className="text-gray-600 text-xl cursor-pointer hover:text-gray-800"
+            title="알림"
+          />
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+            2
+          </span>
+        </div>
+        <div className="h-8 w-8 bg-blue-500 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600">
+          <FaUser />
+        </div>
+      </div>
     </div>
   );
 }

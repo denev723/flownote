@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { createTodo } from "../../api/apiClient";
 import Input from "../../components/Input";
 import RadioGroup from "../../components/RadioGroup";
+import Topbar from "../../components/Topbar";
+import SEO from "../../components/SEO";
 
 export default function ParsedPreview() {
   const navigate = useNavigate();
@@ -45,60 +47,72 @@ export default function ParsedPreview() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 p-10 bg-gradient-to-br from-white to-blue-50 shadow-xl rounded-xl border border-blue-100">
-      <form className="space-y-8" onSubmit={handleSubmit}>
-        {/* 할 일 제목 입력 필드 */}
-        <Input
-          id="todo"
-          name="todo"
-          label="할 일"
-          icon={<FaRegFileAlt className="text-primary" />}
-          defaultValue={todo?.title || ""}
-          required
-          placeholder="할 일 제목을 입력하세요"
-        />
+    <>
+      <SEO
+        title="FlowNote - Todo Bot"
+        description="GPT를 활용한 할 일 생성 서비스"
+        keywords="gpt, todo, 할 일 생성, ai"
+      />
+      <div className="flex flex-col flex-1 ml-64 overflow-hidden">
+        <Topbar title="FlowNote - Todo Bot" />
+        <main className="flex-1 p-4 pb-16 overflow-auto">
+          <div className="max-w-5xl mx-auto mt-10 p-10 bg-gradient-to-br from-white to-blue-50 shadow-xl rounded-xl border border-blue-100">
+            <form className="space-y-8" onSubmit={handleSubmit}>
+              {/* 할 일 제목 입력 필드 */}
+              <Input
+                id="todo"
+                name="todo"
+                label="할 일"
+                icon={<FaRegFileAlt className="text-primary" />}
+                defaultValue={todo?.title || ""}
+                required
+                placeholder="할 일 제목을 입력하세요"
+              />
 
-        {/* 상태 선택 필드 */}
-        <RadioGroup
-          name="status"
-          label="상태"
-          icon={<FaRegCheckCircle className="text-green-500" />}
-          options={groupOptions.map((option) => ({
-            value: option,
-            label: option,
-          }))}
-          value={status}
-          onChange={setStatus}
-          columns={3}
-        />
+              {/* 상태 선택 필드 */}
+              <RadioGroup
+                name="status"
+                label="상태"
+                icon={<FaRegCheckCircle className="text-green-500" />}
+                options={groupOptions.map((option) => ({
+                  value: option,
+                  label: option,
+                }))}
+                value={status}
+                onChange={setStatus}
+                columns={3}
+              />
 
-        {/* 마감일 선택 필드 */}
-        <Input
-          type="date"
-          id="dueDate"
-          name="dueDate"
-          label="마감일"
-          icon={<FaRegCalendarAlt className="text-red-500" />}
-          defaultValue={todo?.dueDate || new Date().toISOString().split("T")[0]}
-          required
-        />
-        {/* 등록 버튼 */}
-        <div className="pt-4 flex gap-4">
-          <PrimaryButton type="submit" className="w-2/3 h-16 text-xl font-medium">
-            등록하기
-          </PrimaryButton>
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="w-1/3 h-16 text-xl font-medium rounded-lg cursor-pointer border-2 border-gray-300 text-gray-500 
+              {/* 마감일 선택 필드 */}
+              <Input
+                type="date"
+                id="dueDate"
+                name="dueDate"
+                label="마감일"
+                icon={<FaRegCalendarAlt className="text-red-500" />}
+                defaultValue={todo?.dueDate || new Date().toISOString().split("T")[0]}
+                required
+              />
+              {/* 등록 버튼 */}
+              <div className="pt-4 flex gap-4">
+                <PrimaryButton type="submit" className="w-2/3 h-16 text-xl font-medium">
+                  등록하기
+                </PrimaryButton>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="w-1/3 h-16 text-xl font-medium rounded-lg cursor-pointer border-2 border-gray-300 text-gray-500 
                      hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 
                      active:bg-gray-200 
                      transition-all duration-200 shadow-sm hover:shadow"
-          >
-            취소하기
-          </button>
-        </div>
-      </form>
-    </div>
+                >
+                  취소하기
+                </button>
+              </div>
+            </form>
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
