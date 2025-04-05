@@ -1,22 +1,18 @@
 import { FaRegCalendarAlt, FaRegCheckCircle, FaRegFileAlt } from "react-icons/fa";
 import PrimaryButton from "../../components/PrimaryButton";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { useTodoStore } from "../../store/todoStore";
 import { useNavigate } from "react-router-dom";
 import { createTodo } from "../../api/apiClient";
-import { GroupType } from "../../types";
+import Input from "../../components/Input";
+import RadioGroup from "../../components/RadioGroup";
 
 export default function ParsedPreview() {
   const navigate = useNavigate();
-  const groupOptions = ["개인", "회사", "프로젝트", "기타"];
+  const groupOptions = ["할 일", "진행 중", "완료 🙌"];
 
-  const { todo, resetGptResult } = useTodoStore();
-
-  const getNowDateTimeString = () => {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // 시간 보정
-    return now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm 형식
-  };
+  const { todo, setGptResult, resetGptResult } = useTodoStore();
+  const [status, setStatus] = useState<string>(todo?.status || "할 일");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,10 +20,8 @@ export default function ParsedPreview() {
     const formData = new FormData(e.currentTarget);
     const newTodo = {
       title: formData.get("todo") as string,
-      description: formData.get("desc") as string,
-      startDate: formData.get("from") as string,
-      endDate: formData.get("to") as string,
-      group: formData.get("group") as GroupType,
+      status: status as "할 일" | "진행 중" | "완료 🙌",
+      dueDate: formData.get("dueDate") as string,
     };
 
     try {
@@ -37,13 +31,14 @@ export default function ParsedPreview() {
 
       navigate("/todo-bot");
     } catch (error) {
+      setGptResult(newTodo);
       console.error(error);
       alert("⚠️ 노션 등록 중 오류가 발생했어요!");
     }
   };
 
   const handleCancel = () => {
-    if (confirm("정말 취소할것인가?")) {
+    if (confirm("정말 취소하시겠어요?")) {
       resetGptResult();
       navigate("/todo-bot");
     }
@@ -52,92 +47,41 @@ export default function ParsedPreview() {
   return (
     <div className="max-w-5xl mx-auto mt-10 p-10 bg-gradient-to-br from-white to-blue-50 shadow-xl rounded-xl border border-blue-100">
       <form className="space-y-8" onSubmit={handleSubmit}>
-        {/* 할 일 입력 - 디자인 개선 */}
-        <div className="space-y-2">
-          <label htmlFor="todo" className="flex items-center gap-2 text-lg font-semibold text-blue-600 mb-2">
-            <FaRegCheckCircle className="text-blue-500" />
-            <span>할 일</span>
-          </label>
-          <input
-            name="todo"
-            id="todo"
-            type="text"
-            defaultValue={todo?.title}
-            required
-            className="input input-bordered w-full h-16 text-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm px-5 rounded-lg"
-          />
-        </div>
+        {/* 할 일 제목 입력 필드 */}
+        <Input
+          id="todo"
+          name="todo"
+          label="할 일"
+          icon={<FaRegFileAlt className="text-primary" />}
+          defaultValue={todo?.title || ""}
+          required
+          placeholder="할 일 제목을 입력하세요"
+        />
 
-        <div className="space-y-2">
-          <label htmlFor="desc" className="flex items-center gap-2 text-lg font-semibold text-blue-600 mb-2">
-            <FaRegFileAlt className="text-blue-500" />
-            <span>설 명</span>
-          </label>
-          <input
-            name="desc"
-            id="desc"
-            type="text"
-            defaultValue={todo?.description}
-            className="input input-bordered w-full h-16 text-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm px-5 rounded-lg"
-          />
-        </div>
+        {/* 상태 선택 필드 */}
+        <RadioGroup
+          name="status"
+          label="상태"
+          icon={<FaRegCheckCircle className="text-green-500" />}
+          options={groupOptions.map((option) => ({
+            value: option,
+            label: option,
+          }))}
+          value={status}
+          onChange={setStatus}
+          columns={3}
+        />
 
-        {/* 기간 선택 - 2칸 그리드로 변경 */}
-        <div className="space-y-6">
-          <div className="w-full">
-            <label htmlFor="from" className="flex items-center gap-2 text-lg font-semibold text-blue-600 mb-2">
-              <FaRegCalendarAlt className="text-blue-500" />
-              <span>시작 일자</span>
-            </label>
-            <input
-              name="from"
-              id="from"
-              type="datetime-local"
-              defaultValue={todo?.startDate && todo.startDate !== "" ? todo.startDate : getNowDateTimeString()}
-              className="input input-bordered w-full h-16 text-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm px-5 rounded-lg"
-            />
-          </div>
-
-          <div className="w-full">
-            <label htmlFor="to" className="flex items-center gap-2 text-lg font-semibold text-blue-600 mb-2">
-              <FaRegCalendarAlt className="text-blue-500" />
-              <span>종료 일자</span>
-            </label>
-            <input
-              name="to"
-              id="to"
-              type="datetime-local"
-              defaultValue={todo?.endDate && todo.endDate !== "" ? todo.endDate : getNowDateTimeString()}
-              className="input input-bordered w-full h-16 text-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm px-5 rounded-lg"
-            />
-          </div>
-        </div>
-
-        {/* 그룹 선택 - 디자인 개선 */}
-        <fieldset className="space-y-3">
-          <legend className="flex items-center gap-2 text-lg font-semibold text-blue-600 mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
-            </svg>
-            <span>그룹</span>
-          </legend>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {groupOptions.map((option, idx) => (
-              <label
-                key={idx}
-                htmlFor={`group-${idx + 1}`}
-                className="flex items-center justify-center h-16 px-4 rounded-lg border-2 border-blue-200 
-                  cursor-pointer transition-all duration-200
-                  hover:bg-blue-100 hover:border-blue-300
-                  has-[:checked]:bg-blue-400 has-[:checked]:text-white has-[:checked]:border-blue-400"
-              >
-                <input type="radio" name="group" id={`group-${idx + 1}`} value={option} required className="sr-only" defaultChecked={todo?.group ? todo.group === option : option === "기타"} />
-                <span className="text-lg font-medium">{option}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
+        {/* 마감일 선택 필드 */}
+        <Input
+          type="date"
+          id="dueDate"
+          name="dueDate"
+          label="마감일"
+          icon={<FaRegCalendarAlt className="text-red-500" />}
+          defaultValue={todo?.dueDate || new Date().toISOString().split("T")[0]}
+          required
+        />
         {/* 등록 버튼 */}
         <div className="pt-4 flex gap-4">
           <PrimaryButton type="submit" className="w-2/3 h-16 text-xl font-medium">

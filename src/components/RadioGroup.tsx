@@ -23,19 +23,7 @@ export type RadioGroupProps = Omit<
 
 const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
   (
-    {
-      label,
-      icon,
-      options,
-      name,
-      value,
-      onChange,
-      error,
-      columns = 4,
-      className,
-      defaultValue,
-      ...props
-    },
+    { label, icon, options, name, value, onChange, error, columns = 4, className, ...props },
     ref
   ) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,8 +69,9 @@ const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
                 name={name}
                 id={`${name}-${idx + 1}`}
                 value={option.value}
-                checked={value === option.value}
-                defaultChecked={defaultValue === option.value}
+                {...(value !== undefined
+                  ? { checked: value === option.value }
+                  : { defaultChecked: option.value === props.defaultValue })}
                 onChange={handleChange}
                 className="sr-only"
               />

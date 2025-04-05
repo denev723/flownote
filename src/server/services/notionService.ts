@@ -1,5 +1,5 @@
 import { Client } from "@notionhq/client";
-import { GroupType } from "../../types";
+import { formatNotionIdToUUID } from "../../utils/formatNotionId";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -7,15 +7,20 @@ const notion = new Client({
 
 export const createTodoInNotion = async (todo: {
   title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  group: GroupType;
+  status: "할 일" | "진행 중" | "완료 🙌";
+  dueDate: string;
 }) => {
+  if (!process.env.NOTION_TODO_DATABASE_ID) {
+    throw new Error("NOTION_TODO_DATABASE_ID 환경 변수가 설정되지 않았습니다.");
+  }
+
+  console.log("1caa25c64e8580f4b138cad53aac1655");
+  console.log(formatNotionIdToUUID("1caa25c64e8580f4b138cad53aac1655"));
+
   return await notion.pages.create({
-    parent: { database_id: "1caa25c6-4e85-815d-b5f2-c128ac02d9c0" },
+    parent: { database_id: formatNotionIdToUUID("1caa25c64e8580f4b138cad53aac1655") as string },
     properties: {
-      Name: {
+      제목: {
         title: [
           {
             text: {
@@ -24,36 +29,17 @@ export const createTodoInNotion = async (todo: {
           },
         ],
       },
-      그룹: {
-        select: {
-          name: todo.group,
+      상태: {
+        status: {
+          name: todo.status || "할 일",
         },
       },
-      시작일: {
+      마감일: {
         date: {
-          start: todo.startDate,
-          end: todo.startDate === todo.endDate ? null : todo.endDate,
+          start: todo.dueDate,
         },
       },
     },
-    children: todo.description
-      ? [
-          {
-            object: "block",
-            type: "paragraph",
-            paragraph: {
-              rich_text: [
-                {
-                  type: "text",
-                  text: {
-                    content: todo.description,
-                  },
-                },
-              ],
-            },
-          },
-        ]
-      : [],
   });
 };
 

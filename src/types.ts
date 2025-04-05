@@ -1,15 +1,11 @@
-export type GroupType = "개인" | "회사" | "프로젝트" | "기타";
-
-export interface GPTTodo {
+export interface Todo {
   title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  group: GroupType;
+  status?: "할 일" | "진행 중" | "완료 🙌";
+  dueDate?: string;
 }
 
 export interface TodoStore {
-  todo: GPTTodo | null;
-  setGptResult: (todo: GPTTodo) => void;
+  todo: Todo | null;
+  setGptResult: (todo: Todo) => void;
   resetGptResult: () => void;
 }

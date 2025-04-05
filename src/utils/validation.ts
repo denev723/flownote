@@ -1,9 +1,15 @@
-import { GPTTodo } from "../types";
+import { Todo } from "../types";
 
-export function isValidTodo(obj: unknown): obj is GPTTodo {
-  if (typeof obj === "object" && obj !== null && "title" in obj && "startDate" in obj && "endDate" in obj && "group" in obj) {
-    const o = obj as GPTTodo;
-    return typeof o.title === "string" && typeof o.startDate === "string" && typeof o.endDate === "string" && typeof o.group === "string";
-  }
-  return false;
+export function isValidTodo(obj: unknown): obj is Todo {
+  if (typeof obj !== "object" || obj === null) return false;
+
+  const o = obj as Partial<Todo>;
+
+  if (!("title" in o) || typeof o.title !== "string") return false;
+
+  if ("dueDate" in o && typeof o.dueDate !== "string") return false;
+
+  if ("status" in o && typeof o.status !== "string") return false;
+
+  return true;
 }

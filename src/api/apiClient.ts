@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GPTTodo } from "../types";
+import { Todo } from "../types";
 
 export const getChatGptResponse = async (prompt: string) => {
   try {
@@ -16,7 +16,7 @@ export const getChatGptResponse = async (prompt: string) => {
   }
 };
 
-export const createTodo = async (todo: GPTTodo) => {
+export const createTodo = async (todo: Todo) => {
   try {
     const response = await axios.post("/api/notion/createTodo", todo);
 

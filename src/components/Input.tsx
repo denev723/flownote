@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
-  icon?: string;
+  icon?: React.ReactNode;
   error?: string;
 };
 
