@@ -3,7 +3,7 @@ import { getChatGptResponse } from "../services/gptService";
 
 const gptRouter = Router();
 
-gptRouter.post("/chat", async (req, res) => {
+gptRouter.post("/chat-todo", async (req, res) => {
   const { prompt } = req.body;
 
   try {
