@@ -8,7 +8,7 @@ const client = new OpenAI({
 
 const today = dayjs().format("YYYY-MM-DD");
 
-export const getChatGptResponse = async (prompt: string) => {
+export const getGptTodoResponse = async (prompt: string) => {
   const preprocessedPrompt = replaceRelativeDates(prompt);
 
   const chatCompletion = await client.chat.completions.create({

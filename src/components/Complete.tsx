@@ -18,14 +18,16 @@ export default function Complete({ linkHref, linkText, message }: Props) {
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 w-full max-w-md">
-        <Link
-          to={linkHref || "/"}
+        <a
+          href={linkHref || "javascript:void(0)"}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 bg-blue-400 text-white font-semibold py-3 px-6 rounded-md 
                    hover:bg-blue-500 transition-all duration-200 shadow-sm hover:shadow w-full"
         >
           <FaArrowLeft />
           <span>{linkText}</span>
-        </Link>
+        </a>
 
         <Link
           to="/"

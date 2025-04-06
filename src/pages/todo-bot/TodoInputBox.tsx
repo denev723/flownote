@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTodoStore } from "../../store/todoStore";
 import ParsedPreview from "./ParsedPreview";
-import { getChatGptResponse } from "../../api/apiClient";
+import { getGptTodoResponse } from "../../api/apiClient";
 import { isValidTodo } from "../../utils/validation";
 import Textarea from "../../components/Textarea";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -22,7 +22,7 @@ export default function TodoInputBox() {
 
     try {
       setIsLoading(true);
-      const parsedTodo = await getChatGptResponse(input);
+      const parsedTodo = await getGptTodoResponse(input);
       if (!isValidTodo(parsedTodo)) {
         alert("GPT가 똥을 쌌네요..");
         return;
@@ -52,7 +52,7 @@ export default function TodoInputBox() {
             {!todo ? (
               <>
                 <Textarea
-                  placeholder="예: 내일 오전 10시에 회의 잡아줘"
+                  placeholder="일정 및 할 일을 입력해주세요."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   className="h-40"

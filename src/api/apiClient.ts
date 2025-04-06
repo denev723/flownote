@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Todo } from "../types";
 
-export const getChatGptResponse = async (prompt: string) => {
+export const getGptTodoResponse = async (prompt: string) => {
   try {
     const response = await axios.post("/api/gpt/chat-todo", { prompt });
 
