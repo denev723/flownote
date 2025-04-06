@@ -8,7 +8,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import Topbar from "../../components/Topbar";
 import SEO from "../../components/SEO";
 
-export default function GPTInputBox() {
+export default function TodoInputBox() {
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
 
@@ -16,7 +16,7 @@ export default function GPTInputBox() {
 
   const handleSubmit = async () => {
     if (!input.trim()) {
-      alert("할 일을 입력하거라~!");
+      alert("할 일을 입력해주세요.");
       return;
     }
 
@@ -24,13 +24,13 @@ export default function GPTInputBox() {
       setIsLoading(true);
       const parsedTodo = await getChatGptResponse(input);
       if (!isValidTodo(parsedTodo)) {
-        alert("GPT 똥 쌌다..");
+        alert("GPT가 똥을 쌌네요..");
         return;
       }
       setGptResult(parsedTodo);
     } catch (error: unknown) {
       console.error("Error", error);
-      alert("에러 떳다... 다시 고고");
+      alert("에러 떳네요... 다시 고고");
     } finally {
       setIsLoading(false);
     }

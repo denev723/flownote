@@ -11,8 +11,10 @@ export default function ParsedPreview() {
   const navigate = useNavigate();
   const groupOptions = ["할 일", "진행 중", "완료 🙌"];
 
-  const { todo, setGptResult, resetGptResult } = useTodoStore();
+  const { todo, setGptResult, resetGptResult, toggleComplete, isComplete } = useTodoStore();
   const [status, setStatus] = useState<string>(todo?.status || "할 일");
+
+  console.log(isComplete);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,10 +28,10 @@ export default function ParsedPreview() {
 
     try {
       await createTodo(newTodo);
-      alert("📌 노션에 할 일이 성공적으로 등록됐어요!");
       resetGptResult();
+      toggleComplete(true);
 
-      navigate("/todo-bot");
+      navigate("/todo-bot/complete", { state: { isAllowed: true } });
     } catch (error) {
       setGptResult(newTodo);
       console.error(error);

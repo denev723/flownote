@@ -6,6 +6,9 @@ export interface Todo {
 
 export interface TodoStore {
   todo: Todo | null;
+  isComplete: boolean;
   setGptResult: (todo: Todo) => void;
   resetGptResult: () => void;
+  toggleComplete: (status: boolean) => void;
+  resetComplete: () => void;
 }

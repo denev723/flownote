@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import dayjs from "dayjs";
+import { replaceRelativeDates } from "../../utils/replaceRelativeDates";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -8,6 +9,8 @@ const client = new OpenAI({
 const today = dayjs().format("YYYY-MM-DD");
 
 export const getChatGptResponse = async (prompt: string) => {
+  const preprocessedPrompt = replaceRelativeDates(prompt);
+
   const chatCompletion = await client.chat.completions.create({
     model: "gpt-4-turbo",
     messages: [
@@ -40,7 +43,7 @@ export const getChatGptResponse = async (prompt: string) => {
       },
       {
         role: "user",
-        content: prompt,
+        content: preprocessedPrompt,
       },
     ],
     temperature: 0.4,
