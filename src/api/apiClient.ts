@@ -3,7 +3,7 @@ import { Todo } from "../types";
 
 export const getChatGptResponse = async (prompt: string) => {
   try {
-    const response = await axios.post("/api/gpt/chat", { prompt });
+    const response = await axios.post("/api/gpt/chat-todo", { prompt });
 
     if (!response.data.ok) {
       throw new Error(response.data.message || "GPT 요청 실패");
