@@ -1,6 +1,7 @@
 import { FaClipboardList } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BsJournalText, BsJournalBookmark } from "react-icons/bs";
+import SidebarLink from "./SidebarLink";
 
 export default function Sidebar() {
   return (
@@ -31,44 +32,18 @@ export default function Sidebar() {
 
         {/* 메뉴 항목들 */}
         <div className="space-y-2">
-          <Link
-            to="/todo-bot"
-            className="w-full py-3 px-4 rounded-lg flex items-center gap-3
-              bg-white shadow-sm hover:shadow-md hover:bg-blue-50
-              active:bg-blue-100 transition-all duration-200
-              relative overflow-hidden border border-transparent hover:border-blue-200 group"
-          >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-500 group-hover:bg-blue-200 transition-all">
-              <FaClipboardList size={16} />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
-                할 일 봇
-              </span>
-              <span className="text-xs text-gray-400 group-hover:text-blue-400 transition-colors">
-                Notion에 할 일 자동등록
-              </span>
-            </div>
-          </Link>
-          <Link
-            to="/memo-bot"
-            className="w-full py-3 px-4 rounded-lg flex items-center gap-3
-              bg-white shadow-sm hover:shadow-md hover:bg-blue-50
-              active:bg-blue-100 transition-all duration-200
-              relative overflow-hidden border border-transparent hover:border-blue-200 group"
-          >
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-500 group-hover:bg-blue-200 transition-all">
-              <BsJournalBookmark size={16} />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-medium text-gray-700 group-hover:text-blue-600 transition-colors">
-                메모 봇
-              </span>
-              <span className="text-xs text-gray-400 group-hover:text-blue-400 transition-colors">
-                Notion으로 메모 정리
-              </span>
-            </div>
-          </Link>
+          <SidebarLink
+            href="/todo-bot"
+            title="할 일 봇"
+            description="Notion에 할 일 자동등록"
+            icon={<FaClipboardList size={16} />}
+          />
+          <SidebarLink
+            href="/memo-bot"
+            title="메모 봇"
+            description="Notion으로 메모 정리"
+            icon={<BsJournalBookmark size={16} />}
+          />
         </div>
       </div>
 
