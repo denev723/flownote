@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Todo } from "../../types";
+import { Memo, Todo } from "../../types";
 import {
   createMemoInNotion,
   createTodoInNotion,
@@ -22,10 +22,10 @@ notionRouter.post("/create-todo", async (req, res) => {
 });
 
 notionRouter.post("/create-memo", async (req, res) => {
-  const todo = req.body as Todo;
+  const memo = req.body as Memo;
 
   try {
-    await createMemoInNotion(todo);
+    await createMemoInNotion(memo);
     res.status(200).json({ ok: true, message: "노션 등록 완료" });
   } catch (error: unknown) {
     const err = error instanceof Error ? error.message : String(error);
