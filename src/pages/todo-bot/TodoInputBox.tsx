@@ -54,6 +54,10 @@ export default function TodoInputBox() {
                   onChange={(e) => setInput(e.target.value)}
                   className="h-40"
                 />
+                <div className="text-sm text-gray-500 mb-2">
+                  <p>✓ 예시: "다음 주 월요일까지 기획안 작성하기", "오늘 회의 내용 정리"</p>
+                  <p>✓ 날짜와 내용을 함께 입력하면 더 정확한 결과를 얻을 수 있습니다.</p>
+                </div>
                 <PrimaryButton
                   type="button"
                   disabled={isLoading}

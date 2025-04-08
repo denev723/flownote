@@ -52,6 +52,10 @@ export default function MemoInputbox() {
                   onChange={(e) => setInput(e.target.value)}
                   className="h-40"
                 />
+                <div className="text-sm text-gray-500 mb-2">
+                  <p>✓ 예시: "회의 내용 정리", "아이디어 정리"</p>
+                  <p>✓ 리스트나 체크박스 형태로도 저장이 가능합니다.</p>
+                </div>
                 <PrimaryButton
                   type="button"
                   disabled={isLoading}
