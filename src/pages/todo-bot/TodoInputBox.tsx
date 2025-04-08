@@ -28,9 +28,6 @@ export default function TodoInputBox() {
       await createTodo(gptResult);
 
       setIsComplete(true);
-    } catch (error: unknown) {
-      console.error("Error", error);
-      alert("에러 떳네요... 다시 고고");
     } finally {
       setIsLoading(false);
     }
@@ -61,9 +58,9 @@ export default function TodoInputBox() {
                   type="button"
                   disabled={isLoading}
                   onClick={handleSubmit}
-                  className={`${isLoading ? "opacity-80 cursor-not-allowed" : ""}`}
+                  isLoading={isLoading}
                 >
-                  {isLoading ? "로딩 중..." : "GPT에게 요청하기"}
+                  GPT에게 요청하기
                 </PrimaryButton>
               </>
             ) : (

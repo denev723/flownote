@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ApiResponse, Memo, Todo } from "../types";
+import { handleApiError } from "../utils/errorHandler";
 
 export const getGptTodoResponse = async (prompt: string) => {
   try {
@@ -13,8 +14,8 @@ export const getGptTodoResponse = async (prompt: string) => {
 
     return response.data.data;
   } catch (error) {
-    console.error("GPT 요청 중 에러:", error);
-    throw error;
+    handleApiError(error, "gpt");
+    return null;
   }
 };
 
@@ -28,8 +29,8 @@ export const getGptMemoResponse = async (prompt: string) => {
 
     return response.data.data;
   } catch (error) {
-    console.error("GPT 요청 중 에러:", error);
-    throw error;
+    handleApiError(error, "gpt");
+    return null;
   }
 };
 
@@ -43,8 +44,8 @@ export const createMemo = async (memo: Memo) => {
 
     return response.data.data;
   } catch (error) {
-    console.error("Notion 등록 중 에러:", error);
-    throw error;
+    handleApiError(error, "notion");
+    return null;
   }
 };
 
@@ -58,7 +59,7 @@ export const createTodo = async (todo: Todo) => {
 
     return response.data.data;
   } catch (error) {
-    console.error("Notion 등록 중 에러:", error);
-    throw error;
+    handleApiError(error, "notion");
+    return null;
   }
 };
