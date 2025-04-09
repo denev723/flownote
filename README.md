@@ -1,7 +1,5 @@
 # Flownote
 
-![Flownote](./public/flownote-preview.png)
-
 ## 주요 기능
 
 ## 기술 스택

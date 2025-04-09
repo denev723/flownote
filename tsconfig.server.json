@@ -1,10 +1,18 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist/server",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ESNext"
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "./dist/server",
+    "rootDir": "./src/server",
+    "baseUrl": "./src/server",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": ["src/server/**/*"],
   "exclude": ["node_modules"]

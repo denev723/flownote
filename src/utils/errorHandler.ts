@@ -9,12 +9,16 @@ const ERROR_MESSAGES = {
   // 기능별 메시지
   gpt: "AI 처리 중 문제가 발생했습니다.",
   notion: "Notion 연동 중 문제가 발생했습니다.",
+  news: "뉴스 수집 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
 
   // 기본 메시지
   default: "오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
 };
 
-export const handleApiError = (error: unknown, type: "gpt" | "notion" | "default" = "default") => {
+export const handleApiError = (
+  error: unknown,
+  type: "gpt" | "notion" | "news" | "default" = "default"
+) => {
   console.error(`API Error (${type})`, error);
 
   let userMessage = ERROR_MESSAGES[type] || ERROR_MESSAGES.default;

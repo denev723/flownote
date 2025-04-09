@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import dayjs from "dayjs";
 import { replaceRelativeDates } from "../../utils/replaceRelativeDates";
+import { RawNewsItem } from "../../types";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -108,6 +109,67 @@ export const getGptMemoResponse = async (prompt: string) => {
         `,
       },
       { role: "user", content: prompt },
+    ],
+  });
+
+  const getResponse = chatCompletion.choices[0].message.content;
+
+  try {
+    const parsedResponse = JSON.parse(getResponse || "{}");
+    return parsedResponse;
+  } catch (error) {
+    console.error("GPT 응답 파싱 오류:", error);
+    throw new Error("GPT 응답이 올바른 JSON이 아니에요.");
+  }
+};
+
+export const getGptNewsResponse = async (feeds: RawNewsItem[]) => {
+  const chatCompletion = await client.chat.completions.create({
+    model: "gpt-4-turbo",
+    temperature: 0.4,
+    max_tokens: 400,
+    messages: [
+      {
+        role: "system",
+        content: `
+          너는 프론트엔드 개발 뉴스를 분석하고 가공하는 AI 어시스턴트야.
+          주어진 뉴스 피드들을 분석해서 JSON 형식으로 반환해줘.
+
+          다음과 같은 구조로 만들어줘:
+          {
+            "id": "자동생성된 고유 ID",
+            "source": "뉴스 출처 (Javascript Weekly, CSS Weekly, Frontend Focus 중 하나)",
+            "publishedDate": "원본 발행일",
+            "processedDate": "현재 처리 시각",
+            
+            "originalTitle": "원본 제목",
+            "originalDate": "원본 날짜",
+            
+            "title": "가공된 한글 제목",
+            "summary": "핵심 내용 요약 (2-3문장)",
+            
+            "tags": ["관련 기술 태그", "프레임워크", "라이브러리" 등],
+            "type": "article" | "release" | "tutorial" | "tool" | "news",
+            "status": "new",
+            "priority": "high" | "medium" | "low"
+          }
+
+          주의사항:
+          - 반드시 JSON만 응답해. 설명 문장 금지!
+          - title은 한글로 번역하되, 기술 용어는 원어 유지
+          - summary는 한글로 작성하고 핵심 내용을 놓치지 않게 요약
+          - tags는 관련된 기술 스택, 도구, 프레임워크 등을 추출
+          - type은 내용의 성격에 따라 적절히 분류
+          - priority는 기술적 중요도와 시급성을 기준으로 판단
+            * high: 주요 기술 업데이트, 보안 이슈 등
+            * medium: 새로운 도구, 유용한 튜토리얼 등
+            * low: 일반적인 소식, 가벼운 팁 등
+        `,
+      },
+      {
+        role: "user",
+        content: JSON.stringify(feeds),
+      },
     ],
   });
 

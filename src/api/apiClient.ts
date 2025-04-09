@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiResponse, Memo, Todo } from "../types";
+import { ApiResponse, Memo, RawNewsItem, Todo } from "../types";
 import { handleApiError } from "../utils/errorHandler";
 
 export const getGptTodoResponse = async (prompt: string) => {
@@ -60,6 +60,22 @@ export const createTodo = async (todo: Todo) => {
     return response.data.data;
   } catch (error) {
     handleApiError(error, "notion");
+    return null;
+  }
+};
+
+export const processNews = async () => {
+  try {
+    const response = await axios.post<{ success: boolean; feeds?: RawNewsItem[]; error?: string }>(
+      "/api/news/process"
+    );
+
+    if (!response.data || !response.data.success) {
+      throw new Error(response.data?.error || "뉴스 처리 실패");
+    }
+    return response.data;
+  } catch (error) {
+    handleApiError(error, "news");
     return null;
   }
 };
