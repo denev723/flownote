@@ -40,7 +40,7 @@ notionRouter.post("/create-memo", async (req, res) => {
 
 notionRouter.get("/props", async (_, res) => {
   try {
-    const dbid = "1cda25c6-4e85-81a9-8de6-c37c3eaaed93";
+    const dbid = "1d0a25c6-4e85-800a-ba53-f2dad172b98d";
     const props = await getDatabaseProperties(dbid);
     res.status(200).json({ ok: true, message: "속성 정보 가져오기 성공", data: props });
   } catch (error: unknown) {
