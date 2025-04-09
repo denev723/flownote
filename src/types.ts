@@ -32,6 +32,7 @@ export interface RawNewsItem {
   title: string;
   link: string;
   publishDate: string;
+  isCompleted: boolean;
 }
 
 export interface ProcessedNewsItem {
@@ -46,7 +47,7 @@ export interface ProcessedNewsItem {
 
   title: string;
   summary: string;
-  keyPoints: string[];
+  link: string;
 
   tags: string[];
   type: "article" | "release" | "tutorial" | "tool" | "news";

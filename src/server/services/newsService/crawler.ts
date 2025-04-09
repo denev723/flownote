@@ -1,5 +1,6 @@
 import Parser from "rss-parser";
 import { RawNewsItem, NewsSource } from "../../../types";
+import { cleanContent } from "../../../utils/cleanContent";
 
 const RSS_FEEDS = {
   "Javascript Weekly": "https://javascriptweekly.com/rss/all",
@@ -40,9 +41,10 @@ export const fetchSingleFeed = async (source: NewsSource, url: string): Promise<
     return feed.items.map((item) => ({
       title: item.title || "",
       link: item.link || "",
-      description: item.content || item.contentSnippet || "",
+      description: cleanContent(item.content || item.contentSnippet || ""),
       publishDate: item.isoDate || item.pubDate || new Date().toISOString(),
       source: source,
+      isCompleted: false,
     }));
   } catch (error) {
     console.error(`Error fetching ${source}:`, error);

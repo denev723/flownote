@@ -1,7 +1,9 @@
 import { ProcessedNewsItem, RawNewsItem } from "../../../types";
+import { newsDB } from "../../db";
 import { getGptNewsResponse } from "../gptService";
 import { fetchAllFeeds } from "./crawler";
 import { saveDB } from "./saveDB";
+import { updateDB } from "./updateDB";
 
 interface ProcessNewsResponse {
   success: boolean;
@@ -13,17 +15,27 @@ interface ProcessNewsResponse {
 export const processNews = async (): Promise<ProcessNewsResponse> => {
   try {
     const feeds = await fetchAllFeeds();
-    const dbResult = await saveDB(feeds);
+    const dbResults = await saveDB(feeds);
 
-    if (!dbResult.success) {
-      throw new Error(dbResult.error);
+    if (!dbResults.success) {
+      throw new Error(dbResults.error);
     }
 
-    if (dbResult.savedFeeds && dbResult.savedFeeds.length > 0) {
-      const gptResult = await getGptNewsResponse((dbResult.savedFeeds as RawNewsItem[]) || []);
-      console.log(gptResult);
+    const newFeeds = await new Promise<RawNewsItem[]>((resolve, reject) => {
+      newsDB.find({ isCompleted: false }, (error: Error | null, docs: RawNewsItem[]) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(docs);
+        }
+      });
+    });
 
-      return { success: true, feeds: dbResult.savedFeeds, processed: gptResult };
+    if (newFeeds.length > 0) {
+      const gptResults = await getGptNewsResponse(newFeeds);
+      await updateDB(gptResults);
+
+      return { success: true, feeds: dbResults.savedFeeds, processed: gptResults };
     } else {
       return { success: true, feeds: [] };
     }

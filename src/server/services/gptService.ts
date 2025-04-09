@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import dayjs from "dayjs";
 import { replaceRelativeDates } from "../../utils/replaceRelativeDates";
-import { RawNewsItem } from "../../types";
+import { ProcessedNewsItem, RawNewsItem } from "../../types";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -123,9 +123,9 @@ export const getGptMemoResponse = async (prompt: string) => {
   }
 };
 
-export const getGptNewsResponse = async (feeds: RawNewsItem[]) => {
+export const getGptNewsResponse = async (feeds: RawNewsItem[]): Promise<ProcessedNewsItem[]> => {
   const chatCompletion = await client.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: "gpt-3.5-turbo",
     temperature: 0.4,
     max_tokens: 400,
     messages: [
@@ -147,6 +147,7 @@ export const getGptNewsResponse = async (feeds: RawNewsItem[]) => {
             
             "title": "가공된 한글 제목",
             "summary": "핵심 내용 요약 (2-3문장)",
+            "link": "원본 링크",
             
             "tags": ["관련 기술 태그", "프레임워크", "라이브러리" 등],
             "type": "article" | "release" | "tutorial" | "tool" | "news",
