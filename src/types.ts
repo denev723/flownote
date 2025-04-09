@@ -42,8 +42,6 @@ export interface ProcessedNewsItem {
   processedDate: string;
 
   originalTitle: string;
-  originalDate: string;
-  originalContent: string;
 
   title: string;
   summary: string;
@@ -53,5 +51,4 @@ export interface ProcessedNewsItem {
   type: "article" | "release" | "tutorial" | "tool" | "news";
 
   status: "new" | "processed" | "error";
-  priority: "high" | "medium" | "low";
 }

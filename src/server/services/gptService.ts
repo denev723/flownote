@@ -103,7 +103,7 @@ export const getGptMemoResponse = async (prompt: string) => {
             - 일반적인 요약, 정리 항목이면: "list"
               (예: "UX 개선 방향 논의", "고객 피드백 정리")
 
-          - listType은 반드시 포함하고, 무조건 "none", "list", "todo" 중 하나로 정확히 작성해.
+          - listType은 반드시 포함하고, 무조건 "none", "list", "checkbox" 중 하나로 정확히 작성해.
 
           무조건 JSON만 출력하고, 다른 문장은 절대 포함하지 마.
         `,
@@ -142,9 +142,6 @@ export const getGptNewsResponse = async (feeds: RawNewsItem[]): Promise<Processe
             "publishedDate": "원본 발행일",
             "processedDate": "현재 처리 시각",
             
-            "originalTitle": "원본 제목",
-            "originalDate": "원본 날짜",
-            
             "title": "가공된 한글 제목",
             "summary": "핵심 내용 요약 (2-3문장)",
             "link": "원본 링크",
@@ -152,7 +149,6 @@ export const getGptNewsResponse = async (feeds: RawNewsItem[]): Promise<Processe
             "tags": ["관련 기술 태그", "프레임워크", "라이브러리" 등],
             "type": "article" | "release" | "tutorial" | "tool" | "news",
             "status": "new",
-            "priority": "high" | "medium" | "low"
           }
 
           주의사항:
