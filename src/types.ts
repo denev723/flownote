@@ -26,18 +26,20 @@ export interface Memo {
 }
 
 // 뉴스 관련 타입
-export type NewsSource = "Javascript Weekly" | "CSS Weekly" | "Frontend Focus";
 
 export interface RawNewsItem {
   title: string;
   link: string;
+  description: string;
   publishDate: string;
+  source: string;
   isCompleted: boolean;
+  _id?: string;
 }
 
 export interface ProcessedNewsItem {
   id: string;
-  source: NewsSource;
+  source: string;
   publishedDate: string;
   processedDate: string;
 

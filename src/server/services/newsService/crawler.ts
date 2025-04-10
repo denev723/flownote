@@ -1,5 +1,5 @@
 import Parser from "rss-parser";
-import { RawNewsItem, NewsSource } from "../../../types";
+import { RawNewsItem } from "../../../types";
 import { cleanContent } from "../../../utils/cleanContent";
 
 const RSS_FEEDS = {
@@ -34,7 +34,7 @@ const parser: Parser<CustomFeed, CustomItem> = new Parser({
   },
 });
 
-export const fetchSingleFeed = async (source: NewsSource, url: string): Promise<RawNewsItem[]> => {
+export const fetchSingleFeed = async (source: string, url: string): Promise<RawNewsItem[]> => {
   try {
     const feed = await parser.parseURL(url);
 
@@ -56,7 +56,7 @@ export const fetchAllFeeds = async (): Promise<RawNewsItem[]> => {
   const allItems: RawNewsItem[] = [];
 
   for (const [source, url] of Object.entries(RSS_FEEDS)) {
-    const items = await fetchSingleFeed(source as NewsSource, url);
+    const items = await fetchSingleFeed(source, url);
     allItems.push(...items);
   }
 

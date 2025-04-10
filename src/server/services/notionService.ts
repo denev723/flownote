@@ -1,5 +1,5 @@
 import { Client } from "@notionhq/client";
-import { Memo, Todo } from "../../types";
+import { Memo, ProcessedNewsItem, Todo } from "../../types";
 
 type RichTextItemRequest = {
   type?: "text";
@@ -167,6 +167,84 @@ export const createMemoInNotion = async (memo: Memo) => {
           };
         }
       }),
+    ],
+  });
+};
+
+export const createNewsInNotion = async ({
+  source,
+  publishedDate,
+  originalTitle,
+  title,
+  summary,
+  link,
+  tags,
+  type,
+}: ProcessedNewsItem) => {
+  if (!process.env.NOTION_NEWS_DATABASE_ID) {
+    throw new Error("NOTION_NEWS_DATABASE_ID 환경 변수가 설정되지 않았습니다.");
+  }
+
+  return await notion.pages.create({
+    parent: { database_id: process.env.NOTION_NEWS_DATABASE_ID },
+    properties: {
+      제목: {
+        title: [
+          {
+            text: {
+              content: title,
+            },
+          },
+        ],
+      },
+      "오리지날 타이틀": {
+        rich_text: [
+          {
+            text: {
+              content: originalTitle,
+            },
+          },
+        ],
+      },
+      소스: {
+        select: {
+          name: source,
+        },
+      },
+      링크: {
+        url: link,
+      },
+      태그: {
+        multi_select: tags.map((tag) => ({
+          name: tag,
+        })),
+      },
+      타입: {
+        select: {
+          name: type,
+        },
+      },
+      발행일: {
+        date: {
+          start: publishedDate,
+        },
+      },
+    },
+    children: [
+      {
+        object: "block" as const,
+        type: "paragraph" as const,
+        paragraph: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: summary,
+              },
+            },
+          ],
+        },
+      },
     ],
   });
 };

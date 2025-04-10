@@ -11,7 +11,7 @@ export const updateDB = async (gptResults: ProcessedNewsItem[]) => {
             isCompleted: true,
           },
         },
-        {},
+        { upsert: true },
         (error) => {
           if (error) {
             reject(error);

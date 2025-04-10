@@ -1,6 +1,8 @@
+import { CreatePageResponse } from "@notionhq/client/build/src/api-endpoints";
 import { ProcessedNewsItem, RawNewsItem } from "../../../types";
 import { newsDB } from "../../db";
 import { getGptNewsResponse } from "../gptService";
+import { createNewsInNotion } from "../notionService";
 import { fetchAllFeeds } from "./crawler";
 import { saveDB } from "./saveDB";
 import { updateDB } from "./updateDB";
@@ -10,7 +12,14 @@ interface ProcessNewsResponse {
   feeds?: RawNewsItem[];
   processed?: ProcessedNewsItem[];
   error?: string;
+  notionResults?: {
+    successful: number;
+    failed: number;
+    errors: unknown[]; // 또는 더 구체적인 타입으로 지정 가능
+  };
 }
+
+const BATCH_SIZE = 2;
 
 export const processNews = async (): Promise<ProcessNewsResponse> => {
   try {
@@ -32,10 +41,53 @@ export const processNews = async (): Promise<ProcessNewsResponse> => {
     });
 
     if (newFeeds.length > 0) {
-      const gptResults = await getGptNewsResponse(newFeeds);
+      const processInBatches = async (feeds: RawNewsItem[]) => {
+        const results: ProcessedNewsItem[] = [];
+
+        for (let i = 0; i < feeds.length; i += BATCH_SIZE) {
+          const batch = feeds.slice(i, i + BATCH_SIZE);
+          const batchResults = await getGptNewsResponse(batch);
+          results.push(...batchResults);
+        }
+
+        return results;
+      };
+
+      const gptResults = await processInBatches(newFeeds);
       await updateDB(gptResults);
 
-      return { success: true, feeds: dbResults.savedFeeds, processed: gptResults };
+      // Save to Notion
+      const notionResults = [];
+      for (const news of gptResults) {
+        try {
+          const result = await createNewsInNotion(news);
+          notionResults.push({ status: "fulfilled", value: result });
+        } catch (error) {
+          notionResults.push({ status: "rejected", reason: error });
+        }
+      }
+
+      const notionErrors = notionResults
+        .filter((result): result is PromiseRejectedResult => result.status === "rejected")
+        .map((result) => result.reason);
+
+      const successfulNotionResults = notionResults
+        .filter(
+          (result): result is PromiseFulfilledResult<CreatePageResponse> =>
+            result.status === "fulfilled"
+        )
+        .map((result) => result.value);
+
+      return {
+        success: true,
+        feeds: dbResults.savedFeeds,
+        processed: gptResults,
+        notionResults: {
+          successful: successfulNotionResults.length,
+          failed: notionErrors.length,
+          errors: notionErrors,
+        },
+      };
     } else {
       return { success: true, feeds: [] };
     }

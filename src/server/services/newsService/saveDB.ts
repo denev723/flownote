@@ -23,7 +23,7 @@ export const saveDB = async (feeds: RawNewsItem[]): Promise<SaveDBResponse> => {
 
       if (!existingFeed) {
         const savedFeed = await new Promise<RawNewsItem>((resolve, reject) => {
-          newsDB.insert(feed, (error, result) => {
+          newsDB.insert({ ...feed, isCompleted: false }, (error, result) => {
             if (error) reject(error);
             else resolve(result);
           });
