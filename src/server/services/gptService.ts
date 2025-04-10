@@ -36,7 +36,7 @@ export const getGptTodoResponse = async (prompt: string) => {
           - 사용자가 "오늘"이라고 말한 경우에만 dueDate를 "${today}"로 설정해.
           - 사용자가 특정 날짜를 말한 경우, 그 날짜를 그대로 dueDate로 설정해.
           - 날짜는 한국 기준으로 해석해.
-          - 시간대가 없으면 하루 종일 일정으로 처리해.
+          - 시간대가 없으면 dueDate는 ""으로 처리해.
           - 그룹은 없으면 '기타'로 설정해.
           - status는 '할 일', '진행 중', '완료 🙌' 중 하나로 설정해.
           - dueDate는 YYYY-MM-DD 형식으로 설정해.

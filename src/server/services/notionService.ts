@@ -64,11 +64,13 @@ export const createTodoInNotion = async (todo: Todo) => {
           name: todo.status || "할 일",
         },
       },
-      마감일: {
-        date: {
-          start: todo.dueDate,
+      ...(todo.dueDate !== "" && {
+        마감일: {
+          date: {
+            start: todo.dueDate,
+          },
         },
-      },
+      }),
     },
   });
 };
