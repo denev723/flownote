@@ -1,11 +1,12 @@
 import { CreatePageResponse } from "@notionhq/client/build/src/api-endpoints";
 import { ProcessedNewsItem, RawNewsItem } from "../../../types";
-import { newsDB } from "../../db";
+import { crawlLogDB, newsDB } from "../../db";
 import { getGptNewsResponse } from "../gptService";
 import { createNewsInNotion } from "../notionService";
 import { fetchAllFeeds } from "./crawler";
 import { saveDB } from "./saveDB";
 import { updateDB } from "./updateDB";
+import dayjs from "dayjs";
 
 interface ProcessNewsResponse {
   success: boolean;
@@ -31,13 +32,16 @@ export const processNews = async (): Promise<ProcessNewsResponse> => {
     }
 
     const newFeeds = await new Promise<RawNewsItem[]>((resolve, reject) => {
-      newsDB.find({ isCompleted: false }, (error: Error | null, docs: RawNewsItem[]) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(docs);
+      newsDB.find(
+        { isCompleted: false },
+        (error: Error | null, docs: RawNewsItem[]) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(docs);
+          }
         }
-      });
+      );
     });
 
     if (newFeeds.length > 0) {
@@ -68,7 +72,10 @@ export const processNews = async (): Promise<ProcessNewsResponse> => {
       }
 
       const notionErrors = notionResults
-        .filter((result): result is PromiseRejectedResult => result.status === "rejected")
+        .filter(
+          (result): result is PromiseRejectedResult =>
+            result.status === "rejected"
+        )
         .map((result) => result.reason);
 
       const successfulNotionResults = notionResults
@@ -77,6 +84,26 @@ export const processNews = async (): Promise<ProcessNewsResponse> => {
             result.status === "fulfilled"
         )
         .map((result) => result.value);
+
+      await new Promise<void>((resolve) => {
+        crawlLogDB.update(
+          {
+            status: "pending",
+            executedAt: dayjs().toISOString,
+          },
+          {
+            $set: { status: "success" },
+          },
+          { multi: false },
+          (err) => {
+            if (err)
+              throw new Error(
+                `Failed to update crawl log status: ${err.message}`
+              );
+            resolve();
+          }
+        );
+      });
 
       return {
         success: true,
@@ -93,6 +120,9 @@ export const processNews = async (): Promise<ProcessNewsResponse> => {
     }
   } catch (error: unknown) {
     console.error("Error processing news:", error);
-    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 };

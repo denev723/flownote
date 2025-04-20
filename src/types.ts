@@ -13,7 +13,13 @@ export interface Todo {
 }
 
 // 메모 관련 타입
-export type MemoCategory = "회의" | "아이디어" | "자기계발" | "쇼핑" | "집" | "메모";
+export type MemoCategory =
+  | "회의"
+  | "아이디어"
+  | "자기계발"
+  | "쇼핑"
+  | "집"
+  | "메모";
 
 export type MemoListType = "list" | "checkbox" | "none";
 export interface Memo {
@@ -34,6 +40,7 @@ export interface RawNewsItem {
   publishDate: string;
   source: string;
   isCompleted: boolean;
+  createdAt: string;
   _id?: string;
 }
 
@@ -53,4 +60,14 @@ export interface ProcessedNewsItem {
   type: "article" | "release" | "tutorial" | "tool" | "news";
 
   status: "new" | "processed" | "error";
+}
+
+export interface CrawlLog {
+  executedAt: string;
+  totalFeeds: number;
+  newFeeds: number;
+  deletedFeeds: number;
+
+  status: "pending" | "success" | "error";
+  error?: string;
 }
